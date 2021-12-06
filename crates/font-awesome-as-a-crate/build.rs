@@ -14,6 +14,9 @@ fn write_fontawesome_sprite() {
     let dest_path = Path::new(&env::var("OUT_DIR").unwrap()).join("fontawesome.rs");
     let mut dest_file = File::create(&dest_path).unwrap();
     dest_file
+        // Using `as_bytes()` here is a workaround for a limitation of const fn,
+        // which produces E0015 when we match on a str directly, but is fine with [u8]:
+        // https://play.rust-lang.org/?version=stable&edition=2021&gist=2425956c7cc5c5a04db41c5d9757b7ed
         .write_all(b"const fn fontawesome_svg(dir:&str,file:&str)->&'static str{match(dir.as_bytes(),file.as_bytes()){")
         .expect("fontawesome fn write");
     for dirname in &["brands", "regular", "solid"] {
